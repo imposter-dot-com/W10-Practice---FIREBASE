@@ -62,7 +62,6 @@ class LibraryViewModel extends ChangeNotifier {
           .toList();
 
       this.data = AsyncValue.success(data);
-
     } catch (e) {
       // 3- Fetch is unsucessfull
       data = AsyncValue.error(e);
@@ -74,4 +73,41 @@ class LibraryViewModel extends ChangeNotifier {
 
   void start(Song song) => playerState.start(song);
   void stop(Song song) => playerState.stop();
+
+  String? _likeError;
+  String? get likeError => _likeError;
+
+  Future<void> toggleLike(String songId) async {
+    final currentAsyncData = data.data;
+    if (currentAsyncData == null) return;
+
+    // create a deep copy of the current list for an easy rollback
+    final List<LibraryItemData> previousList = List.from(currentAsyncData);
+
+    // map through the items and only update the one that matches the ID
+    final updatedList = currentAsyncData.map((item) {
+      if (item.song.id == songId) {
+        return item.copyWith(
+          song: item.song.copyWith(likes: item.song.likes + 1),
+        );
+      }
+      return item;
+    }).toList();
+
+    data = AsyncValue.success(updatedList);
+    notifyListeners(); // The heart turns red/count goes up NOW
+
+    try {
+      final originalSong = previousList
+          .firstWhere((i) => i.song.id == songId)
+          .song;
+      await songRepository.likeSong(songId, originalSong.likes);
+    } catch (e) {
+      data = AsyncValue.success(previousList);
+      _likeError = "Failed to like song.";
+      notifyListeners();
+    }
+  }
+
+  void clearLikeError() => _likeError = null;
 }
