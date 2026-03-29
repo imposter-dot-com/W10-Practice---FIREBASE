@@ -1,3 +1,7 @@
+import 'package:firebase_2/model/comment/comment.dart';
+
+import 'package:firebase_2/model/songs/song.dart';
+
 import '../../../model/artist/artist.dart';
 import 'artist_repository.dart';
 
@@ -20,4 +24,24 @@ class ArtistRepositoryMock implements ArtistRepository {
       );
     });
   }
+
+  @override
+  Future<List<Comment>> fetchArtistComments(String artistId) {
+    // TODO: implement fetchArtistComments
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Song>> fetchArtistSongs(String artistId) {
+    // TODO: implement fetchArtistSongs
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Comment> postComment(String artistId, String text) {
+    // TODO: implement postComment
+    throw UnimplementedError();
+  }
+
+  
 }
