@@ -49,7 +49,7 @@ class LibraryItemTile extends StatelessWidget {
                   onTap: onLike,
                   child: Row(children: [
                     Icon(
-                      data.song.likes > 0 ? Icons.favorite : Icons.favorite_border,
+                      Icons.favorite_border,
                       color: Colors.pink, size: 20,
                     ),
                     
